@@ -68,6 +68,7 @@ class AbstractTrainer(metaclass=ABCMeta):
         accum_iter = 0
         self.validate(0, accum_iter)
         for epoch in range(self.num_epochs):
+        #for epoch in range(1):
             accum_iter = self.train_one_epoch(epoch, accum_iter)
             self.validate(epoch, accum_iter)
         self.logger_service.complete({
@@ -82,11 +83,14 @@ class AbstractTrainer(metaclass=ABCMeta):
 
         average_meter_set = AverageMeterSet()
         tqdm_dataloader = tqdm(self.train_loader)
+        #tqdm_dataloader = train_loader
+        
 
         for batch_idx, batch in enumerate(tqdm_dataloader):
             batch_size = batch[0].size(0)
             batch = [x.to(self.device) for x in batch]
-
+            #batch = [x.to("cuda") for x in batch]
+            
             self.optimizer.zero_grad()
             loss = self.calculate_loss(batch)
             loss.backward()
